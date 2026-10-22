@@ -59,6 +59,13 @@ jobs:
     steps:
       # The job `if` startsWith() also matches `/rerunfoo`; re-validate `/rerun`
       # as a command (first non-space token is exactly `/rerun`, optional args).
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Validate command
         id: cmd
         env:

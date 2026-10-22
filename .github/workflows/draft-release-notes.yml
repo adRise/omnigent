@@ -73,6 +73,13 @@ jobs:
     timeout-minutes: 40
     steps:
       # --- Resolve the tag and decide whether to proceed (no code run yet) ---
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Resolve tag and guard
         id: guard
         env:

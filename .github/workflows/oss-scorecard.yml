@@ -32,6 +32,13 @@ jobs:
       # on a PRIVATE repo, so a PAT (repo + read:org) in SCORECARD_TOKEN is
       # required until the repo is public. Skip cleanly (green) until it's set so
       # this never paints a red check.
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Check for Scorecard token
         id: gate
         env:

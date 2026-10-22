@@ -45,6 +45,13 @@ jobs:
       # Only repo collaborators (write or higher) may cut a release. This is a
       # sanity gate on top of GitHub's Actions-write dispatch permission; the
       # real ship gate is PR review on merge and the secure repo's own checks.
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Check actor
         env:
           GH_TOKEN: ${{ github.token }}
