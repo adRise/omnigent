@@ -1,0 +1,8 @@
+# adRise runner (host) image: the official host image plus an AWS profile that
+# chains the Pod Identity role into the Bedrock role. Claude Code in the runner
+# then reaches Bedrock without a shared token. Build arg pins the upstream tag.
+ARG HOST_TAG=v0.19.1
+FROM ghcr.io/omnigent-ai/omnigent-host:${HOST_TAG}
+COPY deploy/docker/adrise-aws-config /etc/omnigent/aws-config
+ENV AWS_CONFIG_FILE=/etc/omnigent/aws-config \
+    AWS_REGION=us-west-2

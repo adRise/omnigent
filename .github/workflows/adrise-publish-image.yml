@@ -2,7 +2,9 @@
 # the published omnigent-server-kubernetes image lacks. Needed for the per-user
 # credential store (OMNIGENT_CREDENTIAL_KMS_KEY_ID).
 # Publish: push a tag `adrise-v<upstream>-<n>` (e.g. adrise-v0.19.1-1).
-# Image: ghcr.io/adrise/omnigent-server-kubernetes:<tag>. Make the package public once.
+# Images: ghcr.io/adrise/omnigent-server-kubernetes:<tag> and
+# ghcr.io/adrise/omnigent-host:<tag> (runner image with the Bedrock AWS profile).
+# Make both packages public once.
 name: adRise publish image
 
 on:
@@ -37,4 +39,12 @@ jobs:
             OMNIGENT_EXTRAS=kubernetes,kms
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
+        with:
+          context: .
+          file: deploy/docker/Dockerfile.adrise-host
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/adrise/omnigent-host:${{ github.ref_name }}
           provenance: false
