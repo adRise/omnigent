@@ -51,6 +51,13 @@ jobs:
     steps:
       # Checkout main only for load-maintainers.sh; the PR branch is checked
       # out later (regen job), after authorization passes.
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Checkout (for the maintainer script)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
@@ -153,6 +160,13 @@ jobs:
       # No token / no persisted credentials: `uv lock` can execute PR-chosen
       # build backends, which must not find a push token on disk. The App token
       # is minted only after `uv lock` and enters only at the push step.
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Checkout the PR branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:

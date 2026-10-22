@@ -45,6 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Require admin/maintain role
         env:
           GH_TOKEN: ${{ github.token }}
@@ -69,6 +76,13 @@ jobs:
       already_published: ${{ steps.draft.outputs.already_published }}
       tag: ${{ steps.tag.outputs.tag }}
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Require a final vX.Y.Z tag
         id: tag
         env:
@@ -212,6 +226,13 @@ jobs:
     timeout-minutes: 5
     environment: publish-release
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Mint App token (omnigent)
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0

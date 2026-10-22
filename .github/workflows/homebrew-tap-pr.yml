@@ -54,6 +54,13 @@ jobs:
       version: ${{ steps.r.outputs.version }}
       is_final: ${{ steps.r.outputs.is_final }}
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Resolve tag, version, and finality
         id: r
         env:
@@ -91,6 +98,13 @@ jobs:
       TAP_REPO: ${{ github.repository_owner }}/homebrew-tap
       BRANCH: auto/formula/${{ needs.resolve.outputs.tag }}
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Require admin/maintain role (manual dispatches)
         # The release-event path is already gated by the tag checks above; only a
         # human dispatch needs an actor-role check, since workflow_dispatch is

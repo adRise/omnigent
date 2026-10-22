@@ -67,6 +67,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Require admin/maintain role
         env:
           GH_TOKEN: ${{ github.token }}
@@ -97,6 +104,13 @@ jobs:
       base_sha: ${{ steps.state.outputs.base_sha }}
       already_done: ${{ steps.state.outputs.already_done }}
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Validate version and derive names
         id: derive
         env:
@@ -275,6 +289,13 @@ jobs:
     timeout-minutes: 60
     environment: benchmark-regression-gate
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Regression approved by maintainer
         run: |
           echo "Benchmark regression approved. Proceeding with cut." | tee -a "$GITHUB_STEP_SUMMARY"
@@ -299,6 +320,13 @@ jobs:
       UV_INDEX_URL: https://pypi.org/simple
       PIP_INDEX_URL: https://pypi.org/simple
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Mint App token (omnigent)
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
@@ -413,6 +441,13 @@ jobs:
     permissions:
       actions: write
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          use-policy-store: true
+          egress-policy: audit
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Dispatch the post-release main bump
         env:
           GH_TOKEN: ${{ github.token }}
