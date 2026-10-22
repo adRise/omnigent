@@ -1,0 +1,40 @@
+# adRise build of the Kubernetes server image with the `kms` extra (boto3), which
+# the published omnigent-server-kubernetes image lacks. Needed for the per-user
+# credential store (OMNIGENT_CREDENTIAL_KMS_KEY_ID).
+# Publish: push a tag `adrise-v<upstream>-<n>` (e.g. adrise-v0.19.1-1).
+# Image: ghcr.io/adrise/omnigent-server-kubernetes:<tag>. Make the package public once.
+name: adRise publish image
+
+on:
+  push:
+    tags: ['adrise-v*']
+
+jobs:
+  build-and-push:
+    if: github.repository == 'adRise/omnigent'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1  # v4.4.0
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069  # v4.4.1
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f  # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
+        with:
+          context: .
+          file: deploy/docker/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ghcr.io/adrise/omnigent-server-kubernetes:${{ github.ref_name }}
+          build-args: |
+            OMNIGENT_EXTRAS=kubernetes,kms
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
