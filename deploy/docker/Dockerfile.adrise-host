@@ -1,8 +1,14 @@
-# adRise runner (host) image: the official host image plus an AWS profile that
-# chains the Pod Identity role into the Bedrock role. Claude Code in the runner
-# then reaches Bedrock without a shared token. Build arg pins the upstream tag.
+# adRise runner (host) image: the official host image plus Bedrock access.
+# - An AWS profile that chains the Pod Identity role into the Bedrock role, so
+#   Claude Code, OpenCode and Codex reach Bedrock without a shared token.
+# - A Codex config that selects the amazon-bedrock provider, so Codex does not
+#   ask for an OpenAI login. CODEX_HOME is writable by the Pod user (uid 1000660000)
+#   because Codex writes its state there; the Pod's HOME is an emptyDir.
+# Build arg pins the upstream tag.
 ARG HOST_TAG=v0.19.1
 FROM ghcr.io/omnigent-ai/omnigent-host:${HOST_TAG}
 COPY deploy/docker/adrise-aws-config /etc/omnigent/aws-config
+COPY --chown=1000660000:1000660000 deploy/docker/adrise-codex-config.toml /opt/codex-home/config.toml
 ENV AWS_CONFIG_FILE=/etc/omnigent/aws-config \
-    AWS_REGION=us-west-2
+    AWS_REGION=us-west-2 \
+    CODEX_HOME=/opt/codex-home
